@@ -1,5 +1,6 @@
 package com.liststudy.backedliststudy.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ public class User {
 	@Id
 	@GeneratedValue
 	private Long id;
+	@Column(unique=true)
 	private String username;
 	private String password;
 	
