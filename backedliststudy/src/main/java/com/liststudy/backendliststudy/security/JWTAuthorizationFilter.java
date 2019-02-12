@@ -1,4 +1,4 @@
-package com.liststudy.backedliststudy.security;
+package com.liststudy.backendliststudy.security;
 
 
 

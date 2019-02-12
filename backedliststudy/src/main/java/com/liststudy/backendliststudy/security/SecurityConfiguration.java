@@ -1,4 +1,4 @@
-package com.liststudy.backedliststudy.security;
+package com.liststudy.backendliststudy.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

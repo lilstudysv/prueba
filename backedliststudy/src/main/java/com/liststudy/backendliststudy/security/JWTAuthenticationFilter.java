@@ -1,4 +1,4 @@
-package com.liststudy.backedliststudy.security;
+package com.liststudy.backendliststudy.security;
 
 
 import java.io.IOException;
@@ -41,8 +41,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 		try {
-			com.liststudy.backedliststudy.user.User credenciales = new ObjectMapper()
-					.readValue(request.getInputStream(), com.liststudy.backedliststudy.user.User.class);
+			com.liststudy.backendliststudy.user.User credenciales = new ObjectMapper()
+					.readValue(request.getInputStream(), com.liststudy.backendliststudy.user.User.class);
 
 			return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					credenciales.getUsername(), credenciales.getPassword(), new ArrayList<>()));

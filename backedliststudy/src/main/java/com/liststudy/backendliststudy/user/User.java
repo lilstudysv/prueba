@@ -1,4 +1,4 @@
-package com.liststudy.backedliststudy.user;
+package com.liststudy.backendliststudy.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
