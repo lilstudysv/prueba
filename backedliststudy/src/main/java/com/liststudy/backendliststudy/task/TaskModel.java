@@ -1,44 +1,17 @@
 package com.liststudy.backendliststudy.task;
 
+public class TaskModel {
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
-import com.liststudy.backendliststudy.user.User;
-
-/**/
-
-@Entity
-@Table(name="task")
-public class Task {
-	
-	@Id
-	@GeneratedValue
 	private Long id;
-	@Version
-	private Long version;
-	@Enumerated
-	@Column(columnDefinition = "smallint")
 	private EnumStateTask state;
-	@Enumerated
-	@Column(columnDefinition = "smallint")
 	private EnumTopicTask topic;
-	@Column(columnDefinition = "smallint")
 	private EnumKindTask kind;	
 	private String title;
 	private String description;
 	private Double price;
-	@ManyToOne
-	private User creator;
-	@ManyToOne
-	private User resolver;
-
+	private Long creator;
+	private Long resolver;
+	
 	public Long getId() {
 		return id;
 	}
@@ -81,22 +54,16 @@ public class Task {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public User getCreator() {
+	public Long getCreator() {
 		return creator;
 	}
-	public void setCreator(User creator) {
+	public void setCreator(Long creator) {
 		this.creator = creator;
 	}
-	public User getResolver() {
+	public Long getResolver() {
 		return resolver;
 	}
-	public void setResolver(User resolver) {
+	public void setResolver(Long resolver) {
 		this.resolver = resolver;
-	}
-	public Long getVersion() {
-		return version;
-	}
-	public void setVersion(Long version) {
-		this.version = version;
 	}
 }
