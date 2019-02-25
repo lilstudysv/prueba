@@ -8,6 +8,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,6 +44,7 @@ public class TaskServiceImpl  {
 	    this.hibernateFactory = factory.unwrap(SessionFactory.class);
 	}
 	
+	private static final Log LOG =LogFactory.getLog(TaskServiceImpl.class);
 	
 	public List<TaskModel> getAllTask() {
 		List<TaskModel> taskModelList = new ArrayList<>();
@@ -67,12 +70,14 @@ public class TaskServiceImpl  {
 	}
 	
 	public boolean assignTask(Long id) {
+		LOG.info("assign task "+id);
 		EntityManager em=hibernateFactory.createEntityManager();
 		EntityTransaction transaction=em.getTransaction();
 		transaction.begin();
 		try {
 		Task task=em.find(Task.class, id,LockModeType.OPTIMISTIC);
 		if(task.getResolver()!=null) {
+			LOG.info("cant assign task "+id);
 			return false;
 		}
 		
@@ -82,6 +87,7 @@ public class TaskServiceImpl  {
 		
 		transaction.commit();
 		}catch(Exception e) {
+			LOG.info("cant assign task rolback "+id);
 			return false;
 		}
 		return true;
