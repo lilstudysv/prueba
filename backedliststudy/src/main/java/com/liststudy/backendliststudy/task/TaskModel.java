@@ -10,7 +10,11 @@ public class TaskModel {
 	private String description;
 	private Double price;
 	private Long creator;
-	private Long resolver;
+	
+	public String toString() {
+		return "[id:"+id+",state:"+state+",topic:"+topic+",kind:"+kind+",title:"+title
+				+",description:"+description+",price:"+price+",creator:"+creator+"]";
+	}
 	
 	public Long getId() {
 		return id;
@@ -60,10 +64,5 @@ public class TaskModel {
 	public void setCreator(Long creator) {
 		this.creator = creator;
 	}
-	public Long getResolver() {
-		return resolver;
-	}
-	public void setResolver(Long resolver) {
-		this.resolver = resolver;
-	}
+
 }

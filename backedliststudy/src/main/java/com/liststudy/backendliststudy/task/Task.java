@@ -1,17 +1,21 @@
 package com.liststudy.backendliststudy.task;
 
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.liststudy.backendliststudy.user.User;
-
+import javax.persistence.JoinColumn;
 /**/
 
 @Entity
@@ -38,7 +42,22 @@ public class Task {
 	private User creator;
 	@ManyToOne
 	private User resolver;
-
+	@ManyToMany
+	@JoinTable(
+	  name = "task_request_users", 
+	  joinColumns = { @JoinColumn(name = "task_id") }, 
+	  inverseJoinColumns = { @JoinColumn(name = "user_id") }
+		)
+	private List<User> requestUsers;
+	@ManyToMany
+	@JoinTable(
+		name = "task_accepted_users", 
+		joinColumns = { @JoinColumn(name = "task_id") }, 
+		inverseJoinColumns = { @JoinColumn(name = "user_id") }
+	   )
+	private List<User> acceptedUsers;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -98,5 +117,17 @@ public class Task {
 	}
 	public void setVersion(Long version) {
 		this.version = version;
+	}
+	public List<User> getRequestUsers() {
+		return requestUsers;
+	}
+	public void setRequestUsers(List<User> requestUsers) {
+		this.requestUsers = requestUsers;
+	}
+	public List<User> getAcceptedUsers() {
+		return acceptedUsers;
+	}
+	public void setAcceptedUsers(List<User> acceptedUsers) {
+		this.acceptedUsers = acceptedUsers;
 	}
 }

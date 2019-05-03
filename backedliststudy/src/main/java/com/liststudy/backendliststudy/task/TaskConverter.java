@@ -24,7 +24,18 @@ public class TaskConverter {
 		task.setTitle(taskModel.getTitle());
 		task.setDescription(taskModel.getDescription());
 		task.setCreator(userJpaRepository.findById(taskModel.getCreator()));
-		task.setResolver(userJpaRepository.findById(taskModel.getResolver()));
+		
+		return task;
+	}
+	
+	
+	public Task taskModelToTask(TaskModel taskModel,Task task) {
+	
+		task.setTopic(taskModel.getTopic());
+		task.setKind(taskModel.getKind());
+		task.setPrice(taskModel.getPrice());
+		task.setTitle(taskModel.getTitle());
+		task.setDescription(taskModel.getDescription());
 		
 		return task;
 	}
@@ -40,9 +51,7 @@ public class TaskConverter {
 		taskModel.setTitle(task.getTitle());
 		taskModel.setDescription(task.getDescription());
 		taskModel.setCreator(task.getCreator().getId());
-		if(task.getResolver()!=null) {
-			taskModel.setResolver(task.getResolver().getId());
-		}
+
 			
 		return taskModel;
 	}

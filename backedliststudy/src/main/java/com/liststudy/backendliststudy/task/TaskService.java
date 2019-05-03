@@ -16,35 +16,39 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.liststudy.backendliststudy.user.User;
 import com.liststudy.backendliststudy.user.UserJpaRepository;
 
 @Service("taskServiceImpl")
-public class TaskServiceImpl  {
+public class TaskService  {
 	
 	@Autowired
 	@Qualifier("taskJpaRepository")
 	private TaskJpaRepository taskJpaRepository;
 	
 	@Autowired
-	@Qualifier("taskConverter")
-	private TaskConverter taskConverter;
-	
-	@Autowired
 	@Qualifier("userJpaRepository")
 	private UserJpaRepository userJpaRepository;
+	
+	@Autowired
+	@Qualifier("taskConverter")
+	private TaskConverter taskConverter;
 	
 	
 	private SessionFactory hibernateFactory;
 
 	@Autowired
-	public TaskServiceImpl(EntityManagerFactory factory) {
+	public TaskService(EntityManagerFactory factory) {
 		if(factory.unwrap(SessionFactory.class) == null){
 			throw new NullPointerException("factory is not a hibernate factory");
 	    }
 	    this.hibernateFactory = factory.unwrap(SessionFactory.class);
 	}
 	
-	private static final Log LOG =LogFactory.getLog(TaskServiceImpl.class);
+	private static final Log LOG =LogFactory.getLog(TaskService.class);
+	
+	
+	
 	
 	public List<TaskModel> getAllTask() {
 		List<TaskModel> taskModelList = new ArrayList<>();
@@ -54,19 +58,36 @@ public class TaskServiceImpl  {
 		return taskModelList;
 	}
 	
-	public TaskModel getTask(Long id) {
+	public TaskModel getTaskModel(Long id) {
 		return taskConverter.taskToTaskModel(taskJpaRepository.findById(id));
 	}
 	
-	public void updateCreateTask(TaskModel taskModel) {
-		Task task2=taskJpaRepository.findById(taskModel.getId());
-
-		Task task=taskConverter.taskModelToTask(taskModel);
-		if(task2!=null) {
-			task.setVersion(task2.getVersion());
+	public Task getTask(Long id) {
+		return taskJpaRepository.findById(id);
+	}
+	
+	
+	public TaskModel updateCreateTask(TaskModel taskModel) {
+		Long id = taskModel.getId();
+		Task taskId=null;
+		if(id!=null) {
+			taskId=getTask(id);
 		}
-		
+	
+		Task task;
+		if(taskId==null) { //CREATE
+			String login = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User creador = userJpaRepository.findByUsername(login);
+			taskModel.setState(EnumStateTask.REQUESTED);
+			taskModel.setCreator(creador.getId());
+			task = taskConverter.taskModelToTask(taskModel);
+		}
+		else { //UPDATE
+			task = taskConverter.taskModelToTask(taskModel, taskId);
+			
+		}
 		taskJpaRepository.save(task);
+		return taskConverter.taskToTaskModel(task);
 	}
 	
 	public boolean assignTask(Long id) {
@@ -87,11 +108,22 @@ public class TaskServiceImpl  {
 		
 		transaction.commit();
 		}catch(Exception e) {
-			LOG.info("cant assign task rolback "+id);
+			LOG.info("cant assign task rollback "+id);
 			return false;
 		}
 		return true;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 }
