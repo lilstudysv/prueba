@@ -1,5 +1,8 @@
 package com.liststudy.backendliststudy.taskrequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.liststudy.backendliststudy.user.User;
@@ -17,4 +20,16 @@ public class UserRequestConverter {
 		
 		return userModel;
 	}
+
+
+	public List<UserRequestModel> listUsersToListUserRequest(List<User> users) {
+		List<UserRequestModel> usersRequest = new ArrayList<>();
+		
+		for(User user: users) {
+			usersRequest.add(userToUserModel(user));
+		}
+		
+		return usersRequest;
+	}
+	
 }

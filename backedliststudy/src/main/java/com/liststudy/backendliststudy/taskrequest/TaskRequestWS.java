@@ -9,20 +9,22 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.liststudy.backendliststudy.task.TaskInformationModel;
 import com.liststudy.backendliststudy.task.TaskService;
 
 @RestController
 public class TaskRequestWS {
 
+	private static final Log LOG =LogFactory.getLog(TaskService.class);
+
 	@Autowired
 	@Qualifier("taskRequestService")
 	private TaskRequestService taskRequestService;
-	
-	private static final Log LOG =LogFactory.getLog(TaskService.class);
 	
 
 	@PostMapping("/tasks/requests")
@@ -36,18 +38,6 @@ public class TaskRequestWS {
 	  return response;
 	}
 	
-	@GetMapping("/tasks/requests")
-	public ResponseEntity<List<UserRequestModel>> getUsersByTask(@RequestBody TaskRequestModel taskRequestModel) {	
-	  LOG.info("GET /task/requests/ START");
-	  LOG.info("GET /task/requests/"+taskRequestModel.toString());
-	  
-	  ResponseEntity<List<UserRequestModel>> response = taskRequestService.getRequestUsersByTask(taskRequestModel);
-	  
-	  LOG.info("GET /task/requests/ FINISH");
-	  return response;
-	}
-	
-	
 	@DeleteMapping("/tasks/requests")
 	public ResponseEntity<String> deleteRequestByTask(@RequestBody TaskRequestModel taskRequestModel) {	
 	  LOG.info("DELETE /task/requests/ START");
@@ -59,21 +49,7 @@ public class TaskRequestWS {
 	  return response;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	/*
 	@PostMapping("/tasks/requests/{idTask}/{idUsuario}")
 	public ResponseEntity<String> chooseRequest(@PathVariable(value="idTask") Long id,

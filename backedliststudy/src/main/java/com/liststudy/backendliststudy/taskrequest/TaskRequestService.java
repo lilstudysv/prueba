@@ -46,44 +46,24 @@ public class TaskRequestService {
 		//NO CUMPLE LOS REQUISITOS LA TAREA
 		Task task = taskJpaRepository.findById(taskRequestModel.getIdTask());
 		if(task==null||!task.getState().equals(EnumStateTask.REQUESTED)) {
-			return new ResponseEntity<String>("",HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
 		}
 				
 		if(taskRequestModel.getKindSubmit() == REQUEST_TASK && !task.getRequestUsers().contains(userLogueado)) {
     		task.getRequestUsers().add(userLogueado);
 	    	taskJpaRepository.save(task);
-	    	return new ResponseEntity<String>("",HttpStatus.OK);
+	    	return new ResponseEntity<String>(HttpStatus.OK);
     	}else if(taskRequestModel.getKindSubmit()  == ACCEPTED_TASK && !task.getAcceptedUsers().contains(userLogueado)) {
     		task.getAcceptedUsers().add(userLogueado);
 	    	taskJpaRepository.save(task);
-	    	return new ResponseEntity<String>("",HttpStatus.OK);
+	    	return new ResponseEntity<String>(HttpStatus.OK);
     	}else {
-    		return new ResponseEntity<String>("",HttpStatus.NOT_ACCEPTABLE);
+    		return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
     	}
 	
 	}
 
-    
-    
-    public ResponseEntity<List<UserRequestModel>> getRequestUsersByTask(TaskRequestModel taskRequestModel){
-    	Task task = taskJpaRepository.findById(taskRequestModel.getIdTask());
-		if(task==null||!task.getState().equals(EnumStateTask.REQUESTED)) {
-			return new ResponseEntity<List<UserRequestModel>>(HttpStatus.NOT_ACCEPTABLE);
-		}
-		
-		List<UserRequestModel> requestUsers = new ArrayList<>();	
-		for (User user: obtainRequestAcceptedUsers(taskRequestModel.getKindSubmit() , task)) {
-			requestUsers.add(userRequestConverter.userToUserModel(user));
-		}
-		
-		return new ResponseEntity<List<UserRequestModel>>(requestUsers, HttpStatus.OK);
-		
-    }
-
-	private List<User> obtainRequestAcceptedUsers(int REQUEST_ACCEPTED_TASK, Task task) {
-		return REQUEST_ACCEPTED_TASK == REQUEST_TASK ? task.getRequestUsers() : task.getAcceptedUsers(); 
-	}
-
+ 
 
 
 	public ResponseEntity<String> deleteRequestByTask(TaskRequestModel taskRequestModel) {
@@ -95,19 +75,19 @@ public class TaskRequestService {
 		//NO CUMPLE LOS REQUISITOS LA TAREA
 		Task task = taskJpaRepository.findById(taskRequestModel.getIdTask());
 		if(task==null||!task.getState().equals(EnumStateTask.REQUESTED)) {
-			return new ResponseEntity<String>("",HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		
 	  	if(taskRequestModel.getKindSubmit()  == REQUEST_TASK && task.getRequestUsers().contains(userLogueado)) {
     		task.getRequestUsers().remove(userLogueado);
 	    	taskJpaRepository.save(task);
-			return new ResponseEntity<String>("",HttpStatus.OK);
+			return new ResponseEntity<String>(HttpStatus.OK);
 	  	}else if(taskRequestModel.getKindSubmit()  == ACCEPTED_TASK && task.getAcceptedUsers().contains(userLogueado)) {
 			task.getAcceptedUsers().remove(userLogueado);
 	    	taskJpaRepository.save(task);
-			return new ResponseEntity<String>("",HttpStatus.OK);
+			return new ResponseEntity<String>(HttpStatus.OK);
 	  	}else {
-	  		return new ResponseEntity<String>("",HttpStatus.NOT_ACCEPTABLE);
+	  		return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
 	  	}
 	}
 	

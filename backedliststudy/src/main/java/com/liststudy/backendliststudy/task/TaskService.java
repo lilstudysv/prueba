@@ -13,14 +13,19 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.liststudy.backendliststudy.taskrequest.UserRequestConverter;
 import com.liststudy.backendliststudy.user.User;
 import com.liststudy.backendliststudy.user.UserJpaRepository;
 
-@Service("taskServiceImpl")
+@Service("taskService")
 public class TaskService  {
+	
+	private static final Log LOG =LogFactory.getLog(TaskService.class);
 	
 	@Autowired
 	@Qualifier("taskJpaRepository")
@@ -34,6 +39,10 @@ public class TaskService  {
 	@Qualifier("taskConverter")
 	private TaskConverter taskConverter;
 	
+	@Autowired
+	@Qualifier("userRequestConverter")
+	private UserRequestConverter userRequestConverter;
+	
 	
 	private SessionFactory hibernateFactory;
 
@@ -45,7 +54,7 @@ public class TaskService  {
 	    this.hibernateFactory = factory.unwrap(SessionFactory.class);
 	}
 	
-	private static final Log LOG =LogFactory.getLog(TaskService.class);
+	
 	
 	
 	
@@ -113,8 +122,47 @@ public class TaskService  {
 		}
 		return true;
 	}
+
+
+
+
+
+
+	public ResponseEntity<TaskInformationModel> obtainInformationTask(Long idTask) {
+		String login = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User userLogueado = userJpaRepository.findByUsername(login);
+		
+		//NO CUMPLE LOS REQUESITOS EL USUARIO
+		
+		//NO CUMPLE LOS REQUISITOS LA TAREA
+		Task task = taskJpaRepository.findById(idTask);
+		if(task==null) {
+			return new ResponseEntity<TaskInformationModel>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		
+		TaskInformationModel taskInfomationModel = new TaskInformationModel();
+		
+		if(task.getCreator().getId().equals(userLogueado.getId())) {//CREADOR
+			taskInfomationModel.setCreator(true);
+			taskInfomationModel.setRequestUsers(userRequestConverter.listUsersToListUserRequest(task.getRequestUsers()));
+			taskInfomationModel.setAcceptedUsers(userRequestConverter.listUsersToListUserRequest(task.getAcceptedUsers()));
+		}else {
+			if(task.getAcceptedUsers().contains(userLogueado)) {
+				taskInfomationModel.setRequestAvaible(false);
+				taskInfomationModel.setStartProgessAvaible(true);
+			}else if(task.getRequestUsers().contains(userLogueado)) {
+				taskInfomationModel.setRequestAvaible(true);
+				taskInfomationModel.setStartProgessAvaible(false);
+			}else {
+				taskInfomationModel.setRequestAvaible(false);
+				taskInfomationModel.setStartProgessAvaible(false);
+			}
+				
+		}
+		return new ResponseEntity<TaskInformationModel>(taskInfomationModel, HttpStatus.OK);
 	
-	
+	}
 	
 	
 	
