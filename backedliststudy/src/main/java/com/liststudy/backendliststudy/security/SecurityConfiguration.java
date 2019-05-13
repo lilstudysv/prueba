@@ -20,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfiguration extends  WebSecurityConfigurerAdapter {
 	public static final String LOGIN_URL = "/login";
 	public static final String TASKS_URL = "/tasks";
+	public static final String TASK_URL = "/tasks/*";
 	
 	@Autowired
 	@Qualifier("userService")
@@ -45,6 +46,7 @@ public class SecurityConfiguration extends  WebSecurityConfigurerAdapter {
 			.csrf().disable()
 			.authorizeRequests().antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
 			.antMatchers(HttpMethod.GET, TASKS_URL).permitAll()
+			.antMatchers(HttpMethod.GET, TASK_URL).permitAll()
 			.anyRequest().authenticated().and()
 				.addFilter(new JWTAuthenticationFilter(authenticationManager()))
 				.addFilter(new JWTAuthorizationFilter(authenticationManager()));

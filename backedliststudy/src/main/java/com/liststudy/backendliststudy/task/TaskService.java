@@ -60,8 +60,15 @@ public class TaskService  {
 	
 	
 	public List<TaskModel> getAllTask() {
+		
+		
+		//FILTROS
+		
+		List<Task> tasks = taskJpaRepository.findAll();
+		
+		
 		List<TaskModel> taskModelList = new ArrayList<>();
-		for(Task task :taskJpaRepository.findAll()) {
+		for(Task task :tasks) {
 			taskModelList.add(taskConverter.taskToTaskModel(task));
 		};
 		return taskModelList;

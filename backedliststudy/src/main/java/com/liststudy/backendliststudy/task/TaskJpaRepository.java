@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository("taskJpaRepository")
 public interface TaskJpaRepository extends JpaRepository<Task, Serializable>{
 
-	public abstract Task findById(Long username);
+	public abstract Task findById(Long id);
+	
 }

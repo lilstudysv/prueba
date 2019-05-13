@@ -47,7 +47,7 @@ public class TaskWS  {
 	//RECIBES --> INFORMACION A MAYORES DE LA TAREA
 	//SOLICITANTES
 	
-	@GetMapping("/tasks/{idTask}/information")
+	@GetMapping("/information/tasks/{idTask}")
 	public ResponseEntity<TaskInformationModel> getTaskInformation(@PathVariable(value="idTask") Long idTask) {
 
 		  LOG.info("GET /task/{idTask}/information START");

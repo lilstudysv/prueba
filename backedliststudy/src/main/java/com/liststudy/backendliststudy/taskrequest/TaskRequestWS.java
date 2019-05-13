@@ -1,6 +1,5 @@
 package com.liststudy.backendliststudy.taskrequest;
 
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,13 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.liststudy.backendliststudy.task.TaskInformationModel;
 import com.liststudy.backendliststudy.task.TaskService;
 
 @RestController
@@ -27,71 +23,49 @@ public class TaskRequestWS {
 	private TaskRequestService taskRequestService;
 	
 
-	@PostMapping("/tasks/requests")
-	public ResponseEntity<String> requestByTask(@RequestBody TaskRequestModel taskRequestModel) {	
+	@PatchMapping("/tasks/requests")
+	public ResponseEntity<String> requestTask(@RequestBody TaskRequestModel taskRequestModel) {	
 	  LOG.info("POST /task/requests/ START");
-	  LOG.info("POST /task/requests/"+taskRequestModel.toString());
+	  LOG.info("POST /task/requests/"+taskRequestModel.toStringIdTask());
 	  
-	  ResponseEntity<String> response = taskRequestService.requestUserToTask(taskRequestModel);
+	  ResponseEntity<String> response = taskRequestService.taskRequestAll(taskRequestModel, TaskRequestService.REQUEST_TASK);
 	  
 	  LOG.info("POST /task/requests/ FINISH");
 	  return response;
 	}
 	
 	@DeleteMapping("/tasks/requests")
-	public ResponseEntity<String> deleteRequestByTask(@RequestBody TaskRequestModel taskRequestModel) {	
+	public ResponseEntity<String> deleteRequestTask(@RequestBody TaskRequestModel taskRequestModel) {	
 	  LOG.info("DELETE /task/requests/ START");
-	  LOG.info("DELETE /task/requests/"+taskRequestModel.toString());
+	  LOG.info("DELETE /task/requests/"+taskRequestModel.toStringIdTask());
 	  
-	  ResponseEntity<String> response = taskRequestService.deleteRequestByTask(taskRequestModel);
+	  ResponseEntity<String> response = taskRequestService.taskRequestAll(taskRequestModel, TaskRequestService.DELETE_REQUEST_TASK);
 	  
 	  LOG.info("DELETE /task/request/ FINISH");
 	  return response;
 	}
 	
-
-	/*
-	@PostMapping("/tasks/requests/{idTask}/{idUsuario}")
-	public ResponseEntity<String> chooseRequest(@PathVariable(value="idTask") Long id,
-									@PathVariable(value="idUsuario") Long idUsuario){
-		// NO EXISTE LA TAREA
-		// EL USUARIO NO EXISTE O ERES TU EL QUE ESTA ASIGNADA A LA TAREA
-		
-		
-		return new ResponseEntity<String>("", HttpStatus.OK);
+	
+	@PatchMapping("/tasks/accepteds")
+	public ResponseEntity<String> acceptUser(@RequestBody TaskRequestModel taskRequestModel) {	
+	  LOG.info("POST /task/accepteds/ START");
+	  LOG.info("POST /task/accepteds/"+taskRequestModel.toStringAll());
+	  
+	  ResponseEntity<String> response = taskRequestService.taskRequestAll(taskRequestModel, TaskRequestService.ACCEPTED_USER);
+	  
+	  LOG.info("POST /task/accepteds/ FINISH");
+	  return response;
 	}
 	
-	
-	@PostMapping("/tasks/resolve/{idTask}")
-	public ResponseEntity<String> resolve(@PathVariable(value="idTask") Long id){
-		// NO EXISTE LA TAREA
-		// EL USUARIO NO ERES TU
-		
-		
-		return new ResponseEntity<String>("", HttpStatus.OK);
+	@DeleteMapping("/tasks/accepteds")
+	public ResponseEntity<String> deleteAcceptedUser(@RequestBody TaskRequestModel taskRequestModel) {	
+	  LOG.info("DELETE /task/accepteds/ START");
+	  LOG.info("DELETE /task/accepteds/"+taskRequestModel.toStringAll());
+	  
+	  ResponseEntity<String> response = taskRequestService.taskRequestAll(taskRequestModel, TaskRequestService.DELETE_ACCEPTED_USER);
+	  
+	  LOG.info("DELETE /task/accepteds/ FINISH");
+	  return response;
 	}
-	
-	
-	
-	@PostMapping("/tasks/inProgess/{idTask}")
-	public ResponseEntity<String> startResolve(@PathVariable(value="idTask") Long id){
-		// NO EXISTE LA TAREA
-		// EL USUARIO NO ERES TU
-		
-		
-		return new ResponseEntity<String>("", HttpStatus.OK);
-	}
-	
-	
-	@PostMapping("/tasks/finalice/{idTask}")
-	public ResponseEntity<String> finalice(@PathVariable(value="idTask") Long id){
-		// NO EXISTE LA TAREA
-		// EL USUARIO NO EXISTE O ERES TU
-		
-		
-		return new ResponseEntity<String>("", HttpStatus.OK);
-	}
-	
-*/
 	
 }

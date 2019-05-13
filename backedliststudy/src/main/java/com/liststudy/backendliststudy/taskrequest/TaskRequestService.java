@@ -1,7 +1,5 @@
 package com.liststudy.backendliststudy.taskrequest;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,11 +16,11 @@ import com.liststudy.backendliststudy.user.UserJpaRepository;
 
 @Service("taskRequestService")
 public class TaskRequestService {
-
-	//To diference if is a request task or accepted task
-	public static final int REQUEST_TASK=1;
-	public static final int ACCEPTED_TASK=2;
 	
+	public static final int REQUEST_TASK = 1;
+	public static final int DELETE_REQUEST_TASK = 2;
+	public static final int ACCEPTED_USER = 3;
+	public static final int DELETE_ACCEPTED_USER = 4;
 	
 	@Autowired
 	@Qualifier("taskJpaRepository")
@@ -36,25 +34,41 @@ public class TaskRequestService {
 	@Qualifier("userRequestConverter")
 	private UserRequestConverter userRequestConverter;
 	
-	
-	public ResponseEntity<String> requestUserToTask(TaskRequestModel taskRequestModel) {
+	public ResponseEntity<String> taskRequestAll(TaskRequestModel taskRequestModel, int kindSubmit){
 		String login = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User userLogueado = userJpaRepository.findByUsername(login);
-		
+		User userLogueado = userJpaRepository.findByUsername(login);	
 		//NO CUMPLE LOS REQUESITOS EL USUARIO
+		
 		
 		//NO CUMPLE LOS REQUISITOS LA TAREA
 		Task task = taskJpaRepository.findById(taskRequestModel.getIdTask());
 		if(task==null||!task.getState().equals(EnumStateTask.REQUESTED)) {
 			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
 		}
-				
-		if(taskRequestModel.getKindSubmit() == REQUEST_TASK && !task.getRequestUsers().contains(userLogueado)) {
+		
+		
+		if(kindSubmit==REQUEST_TASK) {
+			return requestTask(userLogueado, task);
+		}else if(kindSubmit==DELETE_REQUEST_TASK) {
+			return deleteRequestTask(userLogueado, task);
+		}else if(kindSubmit==ACCEPTED_USER) {
+			User userAccepted = userJpaRepository.findById(taskRequestModel.getIdUserDeleteAccepted());
+			return acceptUser(task, userAccepted);
+		}else if(kindSubmit==DELETE_ACCEPTED_USER) {
+			User userAccepted = userJpaRepository.findById(taskRequestModel.getIdUserDeleteAccepted());
+			return deleteAcceptedUser(task, userAccepted);
+		}else {
+			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+	}
+	
+	
+	
+	public ResponseEntity<String> requestTask(User userLogueado, Task task) {
+		
+		if( !task.getRequestUsers().contains(userLogueado)) {
     		task.getRequestUsers().add(userLogueado);
-	    	taskJpaRepository.save(task);
-	    	return new ResponseEntity<String>(HttpStatus.OK);
-    	}else if(taskRequestModel.getKindSubmit()  == ACCEPTED_TASK && !task.getAcceptedUsers().contains(userLogueado)) {
-    		task.getAcceptedUsers().add(userLogueado);
 	    	taskJpaRepository.save(task);
 	    	return new ResponseEntity<String>(HttpStatus.OK);
     	}else {
@@ -63,27 +77,12 @@ public class TaskRequestService {
 	
 	}
 
- 
 
+	public ResponseEntity<String> deleteRequestTask(User userLogueado, Task task) {
 
-	public ResponseEntity<String> deleteRequestByTask(TaskRequestModel taskRequestModel) {
-		String login = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User userLogueado = userJpaRepository.findByUsername(login);
 		
-		//NO CUMPLE LOS REQUESITOS EL USUARIO
-		
-		//NO CUMPLE LOS REQUISITOS LA TAREA
-		Task task = taskJpaRepository.findById(taskRequestModel.getIdTask());
-		if(task==null||!task.getState().equals(EnumStateTask.REQUESTED)) {
-			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
-		}
-		
-	  	if(taskRequestModel.getKindSubmit()  == REQUEST_TASK && task.getRequestUsers().contains(userLogueado)) {
+	  	if( task.getRequestUsers().contains(userLogueado)) {
     		task.getRequestUsers().remove(userLogueado);
-	    	taskJpaRepository.save(task);
-			return new ResponseEntity<String>(HttpStatus.OK);
-	  	}else if(taskRequestModel.getKindSubmit()  == ACCEPTED_TASK && task.getAcceptedUsers().contains(userLogueado)) {
-			task.getAcceptedUsers().remove(userLogueado);
 	    	taskJpaRepository.save(task);
 			return new ResponseEntity<String>(HttpStatus.OK);
 	  	}else {
@@ -91,5 +90,29 @@ public class TaskRequestService {
 	  	}
 	}
 	
+	
+	
+	public ResponseEntity<String> acceptUser( Task task, User userAccepted) {
+		if(  task.getRequestUsers().contains(userAccepted) && !task.getAcceptedUsers().contains(userAccepted) ) {
+    		task.getAcceptedUsers().add(userAccepted);
+    		task.getRequestUsers().remove(userAccepted);
+	    	taskJpaRepository.save(task);
+	    	return new ResponseEntity<String>(HttpStatus.OK);
+    	}else {
+    		return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
+    	}
+	}
 
+	public ResponseEntity<String> deleteAcceptedUser( Task task, User userAccepted) {
+	  	if( task.getAcceptedUsers().contains(userAccepted)) {
+    		task.getAcceptedUsers().remove(userAccepted);
+    		task.getRequestUsers().add(userAccepted);
+	    	taskJpaRepository.save(task);
+			return new ResponseEntity<String>(HttpStatus.OK);
+	  	}else {
+	  		return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
+	  	}
+	}
+
+	
 }

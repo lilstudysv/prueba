@@ -28,7 +28,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public static final String TOKEN_BEARER_PREFIX = "Bearer ";
 
 	public static final String SUPER_SECRET_KEY = "1234";
-	public static final long TOKEN_EXPIRATION_TIME = 864_000_000; // 10 day
+	public static final long TOKEN_EXPIRATION_TIME = 999999999; // 10 day
 	
 	private AuthenticationManager authenticationManager;
 
