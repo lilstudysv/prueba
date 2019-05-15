@@ -23,7 +23,6 @@ public class TaskRequestWS {
 	@Qualifier("taskRequestService")
 	private TaskRequestService taskRequestService;
 	
-    @CrossOrigin(origins = "http://localhost:4200")
 	@PatchMapping("/tasks/requests")
 	public ResponseEntity<String> requestTask(@RequestBody TaskRequestModel taskRequestModel) {	
 	  LOG.info("POST /task/requests/ START");
@@ -35,7 +34,6 @@ public class TaskRequestWS {
 	  return response;
 	}
 	
-    @CrossOrigin(origins = "http://localhost:4200")
 	@DeleteMapping("/tasks/requests")
 	public ResponseEntity<String> deleteRequestTask(@RequestBody TaskRequestModel taskRequestModel) {	
 	  LOG.info("DELETE /task/requests/ START");
@@ -47,7 +45,6 @@ public class TaskRequestWS {
 	  return response;
 	}
 	
-    @CrossOrigin(origins = "http://localhost:4200")
 	@PatchMapping("/tasks/accepteds")
 	public ResponseEntity<String> acceptUser(@RequestBody TaskRequestModel taskRequestModel) {	
 	  LOG.info("POST /task/accepteds/ START");
@@ -59,7 +56,6 @@ public class TaskRequestWS {
 	  return response;
 	}
     
-    @CrossOrigin(origins = "http://localhost:4200")
 	@DeleteMapping("/tasks/accepteds")
 	public ResponseEntity<String> deleteAcceptedUser(@RequestBody TaskRequestModel taskRequestModel) {	
 	  LOG.info("DELETE /task/accepteds/ START");
