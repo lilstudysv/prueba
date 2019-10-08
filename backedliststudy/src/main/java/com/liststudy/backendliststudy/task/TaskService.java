@@ -44,21 +44,6 @@ public class TaskService  {
 	private UserRequestConverter userRequestConverter;
 	
 	
-	private SessionFactory hibernateFactory;
-
-	@Autowired
-	public TaskService(EntityManagerFactory factory) {
-		if(factory.unwrap(SessionFactory.class) == null){
-			throw new NullPointerException("factory is not a hibernate factory");
-	    }
-	    this.hibernateFactory = factory.unwrap(SessionFactory.class);
-	}
-	
-	
-	
-	
-	
-	
 	public List<TaskModel> getAllTask() {
 		
 		
@@ -82,29 +67,64 @@ public class TaskService  {
 		return taskJpaRepository.findById(id);
 	}
 	
-	
-	public TaskModel updateCreateTask(TaskModel taskModel) {
-		Long id = taskModel.getId();
-		Task taskId=null;
-		if(id!=null) {
-			taskId=getTask(id);
-		}
-	
-		Task task;
-		if(taskId==null) { //CREATE
-			String login = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			User creador = userJpaRepository.findByUsername(login);
-			taskModel.setState(EnumStateTask.REQUESTED);
-			taskModel.setCreator(creador.getId());
-			task = taskConverter.taskModelToTask(taskModel);
-		}
-		else { //UPDATE
-			task = taskConverter.taskModelToTask(taskModel, taskId);
-			
-		}
+	public TaskModel create(TaskModel taskModel) {
+		String login = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User creador = userJpaRepository.findByUsername(login);
+		taskModel.setState(EnumStateTask.REQUESTED);
+		taskModel.setCreator(creador.getId());
+		Task task = taskConverter.taskModelToTask(taskModel);
 		taskJpaRepository.save(task);
 		return taskConverter.taskToTaskModel(task);
 	}
+	
+	
+	public TaskModel update(Task task, TaskModel taskModel) {
+		task = taskConverter.taskModelToTask(taskModel, task);
+		taskJpaRepository.save(task);
+		return taskConverter.taskToTaskModel(task);
+	}
+	
+	public void delete(Task task) {
+		taskJpaRepository.delete(task);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/////////REVISAR////////
+	
+	
+	private SessionFactory hibernateFactory;
+
+	@Autowired
+	public TaskService(EntityManagerFactory factory) {
+		if(factory.unwrap(SessionFactory.class) == null){
+			throw new NullPointerException("factory is not a hibernate factory");
+	    }
+	    this.hibernateFactory = factory.unwrap(SessionFactory.class);
+	}
+	
+	
+	
+	
+	
+	
 	
 	public boolean assignTask(Long id) {
 		LOG.info("assign task "+id);

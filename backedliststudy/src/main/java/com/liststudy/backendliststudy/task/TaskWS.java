@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,58 +27,118 @@ public class TaskWS  {
 	@Qualifier("taskService")
 	private TaskService taskService;
 	
+	@Autowired
+	@Qualifier("taskValidator")
+	private TaskValidator taskValidator;
 
-	/*
-	 *THIS SERVICES --> NO TOKEN
-	 */
 	@GetMapping("/tasks")
-	public ResponseEntity<List<TaskModel>> getAllTasks() {
+	public ResponseEntity<List<TaskModel>> getAll() {
 		//OBTIENE TODAS LAS TAREAS
 		//FALTA CREAR UNO CON FILTROS
 		return new ResponseEntity<List<TaskModel>>(taskService.getAllTask(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/tasks/{idTask}")
-	public ResponseEntity<TaskModel> getTask(@PathVariable(value="idTask") Long idTask) {
+	public ResponseEntity<TaskModel> get(@PathVariable(value="idTask") Long idTask) {
 		return new ResponseEntity<TaskModel>(taskService.getTaskModel(idTask), HttpStatus.OK);
 	}
-
 	
 	
-	//COMO SABEMOS LOS BOTONES
-	//RECIBES --> INFORMACION A MAYORES DE LA TAREA
-	//SOLICITANTES
-	
-	@GetMapping("/information/tasks/{idTask}")
-	public ResponseEntity<TaskInformationModel> getTaskInformation(@PathVariable(value="idTask") Long idTask) {
-
-		  LOG.info("GET /task/{idTask}/information START");
-		  LOG.info("GET /task/{idTask}/information: "+idTask);
-		  
-		  ResponseEntity<TaskInformationModel> response = taskService.obtainInformationTask(idTask);
-		  
-		  LOG.info("GET /task/{idTask}/information FINISH");
-		  return response;
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//UPDATE-CREATE
 	@PostMapping("/tasks")
-	public ResponseEntity<TaskModel> createUpdateTasks(@RequestBody TaskModel taskModel) {
-		LOG.info("/task START");
-		LOG.info("/task params TaskModel: "+taskModel.toString());
-		TaskModel taskModelReturn = taskService.updateCreateTask(taskModel);
-		LOG.info("/task FINISH");
+	public ResponseEntity<TaskModel> create(@RequestBody TaskModel taskModel) {
+		LOG.info("POST:/tasks params TaskModel: "+taskModel.toString());
+
+		if(!taskValidator.validateCreateRigth(taskModel)) {
+			LOG.info("POST:/tasks NOT ACCEPTABLE --> FINISH");
+			return new ResponseEntity<TaskModel>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		TaskModel taskModelReturn = taskService.create(taskModel);
+		LOG.info("POST:/tasks FINISH");
 		return new ResponseEntity<TaskModel>(taskModelReturn, HttpStatus.OK);
 	}
+	
+	
+	@PutMapping("/tasks")
+	public ResponseEntity<TaskModel> update(@RequestBody TaskModel taskModel) {
+		LOG.info("PUT:/tasks params TaskModel: "+taskModel.toString());
+		
+		if(!taskValidator.validateUpdateRigth(taskModel)) {
+			LOG.info("PUT:/tasks NOT ACCEPTABLE --> FINISH");
+			return new ResponseEntity<TaskModel>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		Task task = taskService.getTask(taskModel.getId());
+		if(task==null || !taskValidator.validateUserTask(task)) {
+			LOG.info("PUT:/tasks NOT ACCEPTABLE --> FINISH 2");
+			return new ResponseEntity<TaskModel>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		TaskModel taskModelReturn = taskService.update(task, taskModel);
+		LOG.info("PUT:/tasks FINISH");
+		return new ResponseEntity<TaskModel>(taskModelReturn, HttpStatus.OK);
+	}
+	
+	
+	@DeleteMapping("/tasks")
+	public ResponseEntity<TaskModel> delete(@RequestBody TaskModel taskModel) {
+		LOG.info("DELETE:/tasks params TaskModel: "+taskModel.toString());
+		
+		if(!taskValidator.validateDeleteRigth(taskModel)) {
+			LOG.info("DELETE:/tasks NOT ACCEPTABLE --> FINISH");
+			return new ResponseEntity<TaskModel>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		Task task = taskService.getTask(taskModel.getId());
+		if(task==null || !taskValidator.validateUserTask(task)) {
+			LOG.info("DELETE:/tasks NOT ACCEPTABLE --> FINISH 2");
+			return new ResponseEntity<TaskModel>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		taskService.delete(task);
+		LOG.info("DELETE:/tasks FINISH");
+		return new ResponseEntity<TaskModel>(HttpStatus.OK);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 	
 	/////////BLOQUEO OPTIMISTA
 	
@@ -94,6 +156,25 @@ public class TaskWS  {
 	}
 	
 	
+	
+	//COMO SABEMOS LOS BOTONES
+		//RECIBES --> INFORMACION A MAYORES DE LA TAREA
+		//SOLICITANTES
+		
+		@GetMapping("/information/tasks/{idTask}")
+		public ResponseEntity<TaskInformationModel> getTaskInformation(@PathVariable(value="idTask") Long idTask) {
+
+			  LOG.info("GET /task/{idTask}/information START");
+			  LOG.info("GET /task/{idTask}/information: "+idTask);
+			  
+			  ResponseEntity<TaskInformationModel> response = taskService.obtainInformationTask(idTask);
+			  
+			  LOG.info("GET /task/{idTask}/information FINISH");
+			  return response;
+		}
+
+		
+
 
 
 	
