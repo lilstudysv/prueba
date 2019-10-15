@@ -16,21 +16,33 @@ public class TaskValidator {
 	private UserJpaRepository userJpaRepository;
 	
 	public boolean validateCreateRigth(TaskModel taskModel) {
-		return  taskModel.getTopic() != null && taskModel.getKind() != null && 
-				taskModel.getTitle() != null && taskModel.getDescription() != null 
-				&& taskModel.getPrice() != null ;
+		return validatePrice(taskModel.getPrice()) && validateTitle(taskModel.getTitle())
+				&& validateDescription(taskModel.getDescription());
+	}
+	
+	public boolean validateDeleteRigth(TaskModel taskModel) {
+		return taskModel.getId() != null && validatePrice(taskModel.getPrice()) 
+				&& validateTitle(taskModel.getTitle()) && validateDescription(taskModel.getDescription());
 	}
 	
 	public boolean validateUpdateRigth(TaskModel taskModel) {
 		return validateCreateRigth(taskModel) && taskModel.getId() != null ;
 	}
 	
-	public boolean validateDeleteRigth(TaskModel taskModel) {
-		return taskModel.getId() != null ;
+	private boolean validatePrice(Double price) {
+		return price!=null && price>0;
 	}
-
+	
+	private boolean validateTitle(String title) {
+		return title!=null && !"".equals(title);
+	}
+	
+	private boolean validateDescription(String description) {
+		return description!=null && !"".equals(description);
+	}
+	
 	public boolean validateUserTask(Task task) {
-		/*TODO: HERENCIA SE VA A USAR EN MUCHoS SITIOS */
+		/*TODO: Study this*/
 		String login = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User userLogueado = userJpaRepository.findByUsername(login);
 		return userLogueado.getId().equals(task.getCreator().getId());
