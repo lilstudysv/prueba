@@ -9,10 +9,13 @@ import com.liststudy.backendliststudy.user.UserJpaRepository;
 @Component("taskConverter")
 public class TaskConverter {
 	
+	private final UserJpaRepository userJpaRepository;
+
 	@Autowired
-	@Qualifier("userJpaRepository")
-	private UserJpaRepository userJpaRepository;
-	
+	public TaskConverter(@Qualifier("userJpaRepository") UserJpaRepository userJpaRepository) {
+		this.userJpaRepository = userJpaRepository;
+	}
+
 	public Task taskModelToTask(TaskModel taskModel) {
 		Task task = new Task();
 		

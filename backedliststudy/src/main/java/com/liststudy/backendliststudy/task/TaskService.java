@@ -27,22 +27,25 @@ public class TaskService  {
 	
 	private static final Log LOG =LogFactory.getLog(TaskService.class);
 	
-	@Autowired
-	@Qualifier("taskJpaRepository")
-	private TaskJpaRepository taskJpaRepository;
+	private final TaskJpaRepository taskJpaRepository;
 	
-	@Autowired
-	@Qualifier("userJpaRepository")
-	private UserJpaRepository userJpaRepository;
+	private final UserJpaRepository userJpaRepository;
 	
-	@Autowired
-	@Qualifier("taskConverter")
-	private TaskConverter taskConverter;
+	private final TaskConverter taskConverter;
 	
+	private final UserRequestConverter userRequestConverter;
+
 	@Autowired
-	@Qualifier("userRequestConverter")
-	private UserRequestConverter userRequestConverter;
-	
+	public TaskService(EntityManagerFactory factory, @Qualifier("taskJpaRepository") TaskJpaRepository taskJpaRepository, @Qualifier("userJpaRepository") UserJpaRepository userJpaRepository, @Qualifier("taskConverter") TaskConverter taskConverter, @Qualifier("userRequestConverter") UserRequestConverter userRequestConverter) {
+		if(factory.unwrap(SessionFactory.class) == null){
+			throw new NullPointerException("factory is not a hibernate factory");
+		}
+		this.hibernateFactory = factory.unwrap(SessionFactory.class);
+		this.taskJpaRepository = taskJpaRepository;
+		this.userJpaRepository = userJpaRepository;
+		this.taskConverter = taskConverter;
+		this.userRequestConverter = userRequestConverter;
+	}
 	
 	public List<TaskModel> getAllTask() {
 		
@@ -112,13 +115,7 @@ public class TaskService  {
 	
 	private SessionFactory hibernateFactory;
 
-	@Autowired
-	public TaskService(EntityManagerFactory factory) {
-		if(factory.unwrap(SessionFactory.class) == null){
-			throw new NullPointerException("factory is not a hibernate factory");
-	    }
-	    this.hibernateFactory = factory.unwrap(SessionFactory.class);
-	}
+
 	
 	
 	
@@ -190,15 +187,6 @@ public class TaskService  {
 		return new ResponseEntity<TaskInformationModel>(taskInfomationModel, HttpStatus.OK);
 	
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 
 }
