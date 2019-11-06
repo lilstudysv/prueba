@@ -2,7 +2,6 @@ package com.liststudy.backendliststudy.task;
 
 import java.util.List;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class TaskWS  {
 
 	private static final Log LOG =LogFactory.getLog(TaskService.class);
-
 	private final TaskService taskService;
-	private final TaskValidator taskValidator;
+	private final TaskInputParamsValidator taskInputParamsValidator;
 
-    @Autowired
-    public TaskWS(@Qualifier("taskService") TaskService taskService, @Qualifier("taskValidator") TaskValidator taskValidator) {
-        this.taskService = taskService;
-        this.taskValidator = taskValidator;
-    }
+	@Autowired
+	public TaskWS(@Qualifier("taskService") TaskService taskService,
+				  @Qualifier("taskInputParamsValidator") TaskInputParamsValidator taskInputParamsValidator) {
+		this.taskService = taskService;
+		this.taskInputParamsValidator = taskInputParamsValidator;
+	}
 
-    @GetMapping("/tasks")
+	@GetMapping("/tasks")
 	public ResponseEntity<List<TaskModel>> getAll() {
 		//TODO: NEED ADD FILTERS
 		return new ResponseEntity<>(taskService.getAllTask(), HttpStatus.OK);
@@ -48,7 +47,7 @@ public class TaskWS  {
 	public ResponseEntity<TaskModel> create(@RequestBody TaskModel taskModel) {
 		LOG.info("POST:/tasks params TaskModel: "+taskModel.toString());
 
-		if(!taskValidator.validateCreateRigth(taskModel)) {
+		if(!taskInputParamsValidator.validateCreateRigth(taskModel)) {
 			LOG.info("POST:/tasks NOT ACCEPTABLE --> FINISH");
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
@@ -63,13 +62,14 @@ public class TaskWS  {
 	public ResponseEntity<TaskModel> update(@RequestBody TaskModel taskModel) {
 		LOG.info("PUT:/tasks params TaskModel: "+taskModel.toString());
 
-		if(!taskValidator.validateUpdateRigth(taskModel)) {
+		if(!taskInputParamsValidator.validateUpdateRigth(taskModel)) {
 			LOG.info("PUT:/tasks NOT ACCEPTABLE --> FINISH");
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 
 		Task task = taskService.getTask(taskModel.getId());
-		if(task==null || !taskValidator.validateUserTask(task)) {
+		//TODO: CREATOR NULL --> ERROR --> @ControllerAdvice  
+		if(!taskService.isTaskValid(task)) {
 			LOG.info("PUT:/tasks NOT ACCEPTABLE --> FINISH 2");
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
@@ -84,13 +84,14 @@ public class TaskWS  {
 	public ResponseEntity<TaskModel> delete(@RequestBody TaskModel taskModel) {
 		LOG.info("DELETE:/tasks params TaskModel: "+taskModel.toString());
 
-		if(!taskValidator.validateDeleteRigth(taskModel)) {
+		if(!taskInputParamsValidator.validateDeleteRigth(taskModel)) {
 			LOG.info("DELETE:/tasks NOT ACCEPTABLE --> FINISH");
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 
 		Task task = taskService.getTask(taskModel.getId());
-		if(task==null || !taskValidator.validateUserTask(task)) {
+		//TODO: CREATOR NULL --> ERROR --> @ControllerAdvice  
+		if(!taskService.isTaskValid(task)) {
 			LOG.info("DELETE:/tasks NOT ACCEPTABLE --> FINISH 2");
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
@@ -158,20 +159,20 @@ public class TaskWS  {
 
 
 	//COMO SABEMOS LOS BOTONES
-		//RECIBES --> INFORMACION A MAYORES DE LA TAREA
-		//SOLICITANTES
+	//RECIBES --> INFORMACION A MAYORES DE LA TAREA
+	//SOLICITANTES
 
-		@GetMapping("/information/tasks/{idTask}")
-		public ResponseEntity<TaskInformationModel> getTaskInformation(@PathVariable(value="idTask") Long idTask) {
+	@GetMapping("/information/tasks/{idTask}")
+	public ResponseEntity<TaskInformationModel> getTaskInformation(@PathVariable(value="idTask") Long idTask) {
 
-			  LOG.info("GET /task/{idTask}/information START");
-			  LOG.info("GET /task/{idTask}/information: "+idTask);
+		LOG.info("GET /task/{idTask}/information START");
+		LOG.info("GET /task/{idTask}/information: "+idTask);
 
-			  ResponseEntity<TaskInformationModel> response = taskService.obtainInformationTask(idTask);
+		ResponseEntity<TaskInformationModel> response = taskService.obtainInformationTask(idTask);
 
-			  LOG.info("GET /task/{idTask}/information FINISH");
-			  return response;
-		}
+		LOG.info("GET /task/{idTask}/information FINISH");
+		return response;
+	}
 
 
 

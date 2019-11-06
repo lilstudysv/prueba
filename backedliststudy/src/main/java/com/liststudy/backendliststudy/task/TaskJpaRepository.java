@@ -7,8 +7,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository("taskJpaRepository")
-public interface TaskJpaRepository extends JpaRepository<Task, Serializable>{
+public interface TaskJpaRepository extends JpaRepository<Task, Serializable>, TaskRepository{
 
-	public abstract Task findById(Long id);
-	
+	Task findById(Long id);
 }

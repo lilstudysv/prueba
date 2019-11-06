@@ -22,11 +22,11 @@ public class TaskConverterTest {
     private final static String DESCRIPTION = "Description";
     private final static Long USER_ID = 1l;
 
-    @InjectMocks
-    private TaskConverter taskConverter;
 
     @Mock
     private UserJpaRepository userJpaRepository;
+
+    private TaskConverter taskConverter;
 
     private Task task;
     private TaskModel taskModel;
@@ -34,6 +34,8 @@ public class TaskConverterTest {
 
     @Before
     public void init() {
+        taskConverter = new TaskConverter(userJpaRepository);
+
         task = new Task();
         task.setId(1l);
         task.setState(EnumStateTask.REQUESTED);
