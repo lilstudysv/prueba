@@ -16,47 +16,47 @@ public class TaskConverter {
 		this.userJpaRepository = userJpaRepository;
 	}
 
-	public Task taskModelToTask(TaskModel taskModel) {
+	public Task taskModelToTask(TaskDTO taskDTO) {
 		Task task = new Task();
 		
-		task.setId(taskModel.getId());
-		task.setState(taskModel.getState());
-		task.setTopic(taskModel.getTopic());
-		task.setKind(taskModel.getKind());
-		task.setPrice(taskModel.getPrice());
-		task.setTitle(taskModel.getTitle());
-		task.setDescription(taskModel.getDescription());
-		task.setCreator(userJpaRepository.findById(taskModel.getCreator()));
+		task.setId(taskDTO.getId());
+		task.setState(taskDTO.getState());
+		task.setTopic(taskDTO.getTopic());
+		task.setKind(taskDTO.getKind());
+		task.setPrice(taskDTO.getPrice());
+		task.setTitle(taskDTO.getTitle());
+		task.setDescription(taskDTO.getDescription());
+		task.setCreator(userJpaRepository.findById(taskDTO.getCreator()));
 		
 		return task;
 	}
 	
 	
-	public Task taskModelToTask(TaskModel taskModel,Task task) {
+	public Task taskModelToTask(TaskDTO taskDTO, Task task) {
 	
-		task.setTopic(taskModel.getTopic());
-		task.setKind(taskModel.getKind());
-		task.setPrice(taskModel.getPrice());
-		task.setTitle(taskModel.getTitle());
-		task.setDescription(taskModel.getDescription());
+		task.setTopic(taskDTO.getTopic());
+		task.setKind(taskDTO.getKind());
+		task.setPrice(taskDTO.getPrice());
+		task.setTitle(taskDTO.getTitle());
+		task.setDescription(taskDTO.getDescription());
 		
 		return task;
 	}
 	
-	public TaskModel taskToTaskModel(Task task) {
-		TaskModel taskModel = new TaskModel();
+	public TaskDTO taskToTaskModel(Task task) {
+		TaskDTO taskDTO = new TaskDTO();
 		
-		taskModel.setId(task.getId());
-		taskModel.setState(task.getState());
-		taskModel.setTopic(task.getTopic());
-		taskModel.setKind(task.getKind());
-		taskModel.setPrice(task.getPrice());
-		taskModel.setTitle(task.getTitle());
-		taskModel.setDescription(task.getDescription());
-		taskModel.setCreator(task.getCreator().getId());
+		taskDTO.setId(task.getId());
+		taskDTO.setState(task.getState());
+		taskDTO.setTopic(task.getTopic());
+		taskDTO.setKind(task.getKind());
+		taskDTO.setPrice(task.getPrice());
+		taskDTO.setTitle(task.getTitle());
+		taskDTO.setDescription(task.getDescription());
+		taskDTO.setCreator(task.getCreator().getId());
 
 			
-		return taskModel;
+		return taskDTO;
 	}
 	
 	

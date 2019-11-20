@@ -18,17 +18,20 @@ import com.liststudy.backendliststudy.user.UserJpaRepository;
 @Service("userService")
 public class UserDetailsServiceImpl implements UserDetailsService{
 
+	private final UserJpaRepository userJpaRepository;
+
 	@Autowired
-	@Qualifier("userJpaRepository")
-	private UserJpaRepository userJpaRepository;
-	
+	public UserDetailsServiceImpl(@Qualifier("userJpaRepository") UserJpaRepository userJpaRepository) {
+		this.userJpaRepository = userJpaRepository;
+	}
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return buildUser(userJpaRepository.findByUsername(username));
 	}
 	
-	public User buildUser(com.liststudy.backendliststudy.user.User user) {
-		return new User(user.getUsername(),user.getPassword(),new ArrayList<GrantedAuthority>());
+	private User buildUser(com.liststudy.backendliststudy.user.User user) {
+		return new User(user.getUsername(),user.getPassword(),new ArrayList<>());
 	}
 
 }

@@ -13,11 +13,17 @@ public class TaskRepositoryImpl implements TaskRepository {
     private EntityManager entityManager;
 
     private static String QUERY_OBTAIN_TASKS = "select * from task";
+    private static String FILTER_MIN_PRICE = "";
+    private static String FILTER_MAX_PRICE="";
+    private static String FILTER_TOPIC_PRICE="";
+    private static String FILTER_NAME="";
 
     @Override
-    public List<Task> getTasksFilters() {
+    public List<Task> getTasksFilters(FiltersTaskDTO filtersTaskDTOTO) {
+/*
         Session session = entityManager.unwrap(Session.class);
         Query query = session.createSQLQuery(QUERY_OBTAIN_TASKS);
-        return query.getResultList();
+*/
+        return entityManager.createQuery(QUERY_OBTAIN_TASKS, Task.class).getResultList();
     }
 }

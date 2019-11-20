@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface TaskRepository {
 
-    List<Task> getTasksFilters();
+    List<Task> getTasksFilters(FiltersTaskDTO filtersTaskDTO);
 
 }

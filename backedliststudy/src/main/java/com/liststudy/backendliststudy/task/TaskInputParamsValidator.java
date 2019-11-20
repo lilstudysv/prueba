@@ -5,21 +5,21 @@ import org.springframework.stereotype.Service;
 @Service("taskInputParamsValidator")
 public class TaskInputParamsValidator {
 
-    public boolean validateCreateRigth(TaskModel taskModel) {
-		return validatePrice(taskModel.getPrice())
-                && validateTitle(taskModel.getTitle())
-				&& validateDescription(taskModel.getDescription());
+    public boolean validateCreateRigth(TaskDTO taskDTO) {
+		return validatePrice(taskDTO.getPrice())
+                && validateTitle(taskDTO.getTitle())
+				&& validateDescription(taskDTO.getDescription());
 	}
 
-	public boolean validateUpdateRigth(TaskModel taskModel) {
-		return validateId(taskModel.getId())
-                && validatePrice(taskModel.getPrice())
-                && validateTitle(taskModel.getTitle())
-				&& validateDescription(taskModel.getDescription())  ;
+	public boolean validateUpdateRigth(TaskDTO taskDTO) {
+		return validateId(taskDTO.getId())
+                && validatePrice(taskDTO.getPrice())
+                && validateTitle(taskDTO.getTitle())
+				&& validateDescription(taskDTO.getDescription())  ;
 	}
 
-    public boolean validateDeleteRigth(TaskModel taskModel) {
-        return validateId(taskModel.getId());
+    public boolean validateDeleteRigth(TaskDTO taskDTO) {
+        return validateId(taskDTO.getId());
     }
 
 	private boolean validatePrice(Double price) {return price!=null && price>0; }

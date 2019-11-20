@@ -32,64 +32,61 @@ public class TaskWS  {
 	}
 
 	@GetMapping("/tasks")
-	public ResponseEntity<List<TaskModel>> getAll() {
+	public ResponseEntity<List<TaskDTO>> getAll(FiltersTaskDTO filtersTaskDTO) {
 		//TODO: NEED ADD FILTERS
-		return new ResponseEntity<>(taskService.getAllTask(), HttpStatus.OK);
+		return new ResponseEntity<>(taskService.getAllTask(filtersTaskDTO), HttpStatus.OK);
 	}
 
 	@GetMapping("/tasks/{idTask}")
-	public ResponseEntity<TaskModel> get(@PathVariable(value="idTask") Long idTask) {
+	public ResponseEntity<TaskDTO> get(@PathVariable(value="idTask") Long idTask) {
 		return new ResponseEntity<>(taskService.getTaskModel(idTask), HttpStatus.OK);
 	}
 
-
 	@PostMapping("/tasks")
-	public ResponseEntity<TaskModel> create(@RequestBody TaskModel taskModel) {
-		LOG.info("POST:/tasks params TaskModel: "+taskModel.toString());
+	public ResponseEntity<TaskDTO> create(@RequestBody TaskDTO taskDTO) {
+		LOG.info("POST:/tasks params TaskDTO: "+ taskDTO.toString());
 
-		if(!taskInputParamsValidator.validateCreateRigth(taskModel)) {
+		if(!taskInputParamsValidator.validateCreateRigth(taskDTO)) {
 			LOG.info("POST:/tasks NOT ACCEPTABLE --> FINISH");
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 
-		TaskModel taskModelReturn = taskService.create(taskModel);
+		TaskDTO taskDTOReturn = taskService.create(taskDTO);
 		LOG.info("POST:/tasks FINISH");
-		return new ResponseEntity<>(taskModelReturn, HttpStatus.OK);
+		return new ResponseEntity<>(taskDTOReturn, HttpStatus.OK);
 	}
 
-
 	@PutMapping("/tasks")
-	public ResponseEntity<TaskModel> update(@RequestBody TaskModel taskModel) {
-		LOG.info("PUT:/tasks params TaskModel: "+taskModel.toString());
+	public ResponseEntity<TaskDTO> update(@RequestBody TaskDTO taskDTO) {
+		LOG.info("PUT:/tasks params TaskDTO: "+ taskDTO.toString());
 
-		if(!taskInputParamsValidator.validateUpdateRigth(taskModel)) {
+		if(!taskInputParamsValidator.validateUpdateRigth(taskDTO)) {
 			LOG.info("PUT:/tasks NOT ACCEPTABLE --> FINISH");
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 
-		Task task = taskService.getTask(taskModel.getId());
+		Task task = taskService.getTask(taskDTO.getId());
 		//TODO: CREATOR NULL --> ERROR --> @ControllerAdvice  
 		if(!taskService.isTaskValid(task)) {
 			LOG.info("PUT:/tasks NOT ACCEPTABLE --> FINISH 2");
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 
-		TaskModel taskModelReturn = taskService.update(task, taskModel);
+		TaskDTO taskDTOReturn = taskService.update(task, taskDTO);
 		LOG.info("PUT:/tasks FINISH");
-		return new ResponseEntity<>(taskModelReturn, HttpStatus.OK);
+		return new ResponseEntity<>(taskDTOReturn, HttpStatus.OK);
 	}
 
-
 	@DeleteMapping("/tasks")
-	public ResponseEntity<TaskModel> delete(@RequestBody TaskModel taskModel) {
-		LOG.info("DELETE:/tasks params TaskModel: "+taskModel.toString());
+	public ResponseEntity<TaskDTO> delete(@RequestBody TaskDTO taskDTO) {
+		LOG.info("DELETE:/tasks params TaskDTO: "+ taskDTO.toString());
 
-		if(!taskInputParamsValidator.validateDeleteRigth(taskModel)) {
+		if(!taskInputParamsValidator.validateDeleteRigth(taskDTO)) {
 			LOG.info("DELETE:/tasks NOT ACCEPTABLE --> FINISH");
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 
-		Task task = taskService.getTask(taskModel.getId());
+		Task task = taskService.getTask(taskDTO.getId());
 		//TODO: CREATOR NULL --> ERROR --> @ControllerAdvice  
 		if(!taskService.isTaskValid(task)) {
 			LOG.info("DELETE:/tasks NOT ACCEPTABLE --> FINISH 2");
@@ -100,83 +97,5 @@ public class TaskWS  {
 		LOG.info("DELETE:/tasks FINISH");
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/////////BLOQUEO OPTIMISTA
-
-
-
-	//CUANDO SE NECESITE EL BLOQUEO OPTIMISTA
-	//NOS VALE DE PRUEBA
-	@PostMapping("/tasks/assigneds/{id}")
-	public ResponseEntity<String> updateCreateTasks(@PathVariable(value="id") Long id) {
-		if(taskService.assignTask(id)) {
-			return new ResponseEntity<>("", HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>("", HttpStatus.LOCKED);
-		}
-	}
-
-
-
-	//COMO SABEMOS LOS BOTONES
-	//RECIBES --> INFORMACION A MAYORES DE LA TAREA
-	//SOLICITANTES
-
-	@GetMapping("/information/tasks/{idTask}")
-	public ResponseEntity<TaskInformationModel> getTaskInformation(@PathVariable(value="idTask") Long idTask) {
-
-		LOG.info("GET /task/{idTask}/information START");
-		LOG.info("GET /task/{idTask}/information: "+idTask);
-
-		ResponseEntity<TaskInformationModel> response = taskService.obtainInformationTask(idTask);
-
-		LOG.info("GET /task/{idTask}/information FINISH");
-		return response;
-	}
-
-
-
-
-
 
 }

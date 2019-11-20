@@ -17,69 +17,69 @@ public class TaskValidatorImplTest {
 
 	@Test
 	public void validateCreateRigth_allRigth(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setPrice(22.2);
-		taskModel.setTitle("title");
-		taskModel.setDescription("Description");
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setPrice(22.2);
+		taskDTO.setTitle("title");
+		taskDTO.setDescription("Description");
 
-		assertThat(taskValidatorImpl.validateCreateRigth(taskModel)).isTrue();
+		assertThat(taskValidatorImpl.validateCreateRigth(taskDTO)).isTrue();
 	}
 
 	@Test
 	public void validateCreateRigth_priceNull(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setTitle("title");
-		taskModel.setDescription("Description");
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setTitle("title");
+		taskDTO.setDescription("Description");
 
-		assertThat(taskValidatorImpl.validateCreateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateCreateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateCreateRigth_priceZeroOrLess(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setTitle("title");
-		taskModel.setDescription("Description");
-		taskModel.setPrice(0.0);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setTitle("title");
+		taskDTO.setDescription("Description");
+		taskDTO.setPrice(0.0);
 
-		assertThat(taskValidatorImpl.validateCreateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateCreateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateCreateRigth_titleNull(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setDescription("Description");
-		taskModel.setPrice(22.2);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setDescription("Description");
+		taskDTO.setPrice(22.2);
 
-		assertThat(taskValidatorImpl.validateCreateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateCreateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateCreateRigth_titleEmpty(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setTitle("");
-		taskModel.setDescription("Description");
-		taskModel.setPrice(22.2);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setTitle("");
+		taskDTO.setDescription("Description");
+		taskDTO.setPrice(22.2);
 
-		assertThat(taskValidatorImpl.validateCreateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateCreateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateCreateRigth_descriptionNull(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setTitle("title");
-		taskModel.setPrice(22.2);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setTitle("title");
+		taskDTO.setPrice(22.2);
 
-		assertThat(taskValidatorImpl.validateCreateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateCreateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateCreateRigth_descriptionEmpty(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setTitle("title");
-		taskModel.setDescription("");
-		taskModel.setPrice(22.2);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setTitle("title");
+		taskDTO.setDescription("");
+		taskDTO.setPrice(22.2);
 
-		assertThat(taskValidatorImpl.validateCreateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateCreateRigth(taskDTO)).isFalse();
 	}
 
 
@@ -89,88 +89,88 @@ public class TaskValidatorImplTest {
 
 	@Test
 	public void validateUpdateRigth_allRigth(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setId(1L);
-		taskModel.setPrice(22.2);
-		taskModel.setTitle("title");
-		taskModel.setDescription("Description");
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setId(1L);
+		taskDTO.setPrice(22.2);
+		taskDTO.setTitle("title");
+		taskDTO.setDescription("Description");
 
-		assertThat(taskValidatorImpl.validateUpdateRigth(taskModel)).isTrue();
+		assertThat(taskValidatorImpl.validateUpdateRigth(taskDTO)).isTrue();
 	}
 
 
 	//TODO: Why  if i delete this method, coverage dont change?
 	@Test
 	public void validateUpdateRigth_idNull(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setPrice(22.2);
-		taskModel.setTitle("title");
-		taskModel.setDescription("Description");
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setPrice(22.2);
+		taskDTO.setTitle("title");
+		taskDTO.setDescription("Description");
 
-		assertThat(taskValidatorImpl.validateUpdateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateUpdateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateUpdateRigth_priceNull(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setId(1L);
-		taskModel.setTitle("title");
-		taskModel.setDescription("Description");
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setId(1L);
+		taskDTO.setTitle("title");
+		taskDTO.setDescription("Description");
 
-		assertThat(taskValidatorImpl.validateUpdateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateUpdateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateUpdateRigth_priceZeroOrLess(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setId(1L);
-		taskModel.setTitle("title");
-		taskModel.setDescription("Description");
-		taskModel.setPrice(0.0);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setId(1L);
+		taskDTO.setTitle("title");
+		taskDTO.setDescription("Description");
+		taskDTO.setPrice(0.0);
 
-		assertThat(taskValidatorImpl.validateUpdateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateUpdateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateUpdateRigth_titleNull(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setId(1L);
-		taskModel.setDescription("Description");
-		taskModel.setPrice(22.2);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setId(1L);
+		taskDTO.setDescription("Description");
+		taskDTO.setPrice(22.2);
 
-		assertThat(taskValidatorImpl.validateUpdateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateUpdateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateUpdateRigth_titleEmpty(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setId(1L);
-		taskModel.setTitle("");
-		taskModel.setDescription("Description");
-		taskModel.setPrice(22.2);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setId(1L);
+		taskDTO.setTitle("");
+		taskDTO.setDescription("Description");
+		taskDTO.setPrice(22.2);
 
-		assertThat(taskValidatorImpl.validateUpdateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateUpdateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateUpdateRigth_descriptionNull(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setId(1L);
-		taskModel.setTitle("title");
-		taskModel.setPrice(22.2);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setId(1L);
+		taskDTO.setTitle("title");
+		taskDTO.setPrice(22.2);
 
-		assertThat(taskValidatorImpl.validateUpdateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateUpdateRigth(taskDTO)).isFalse();
 	}
 
 	@Test
 	public void validateUpdateRigth_descriptionEmpty(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setId(1L);
-		taskModel.setTitle("title");
-		taskModel.setDescription("");
-		taskModel.setPrice(22.2);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setId(1L);
+		taskDTO.setTitle("title");
+		taskDTO.setDescription("");
+		taskDTO.setPrice(22.2);
 
-		assertThat(taskValidatorImpl.validateUpdateRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateUpdateRigth(taskDTO)).isFalse();
 	}
 
 	/*************************************
@@ -178,17 +178,17 @@ public class TaskValidatorImplTest {
 	 ************************************/
 	@Test
 	public void validateDeleteRigth_allRigth(){
-		TaskModel taskModel = new TaskModel();
-		taskModel.setId(1L);
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setId(1L);
 
-		assertThat(taskValidatorImpl.validateDeleteRigth(taskModel)).isTrue();
+		assertThat(taskValidatorImpl.validateDeleteRigth(taskDTO)).isTrue();
 	}
 
 	@Test
 	public void validateDeleteRigth_idNull(){
-		TaskModel taskModel = new TaskModel();
+		TaskDTO taskDTO = new TaskDTO();
 
-		assertThat(taskValidatorImpl.validateDeleteRigth(taskModel)).isFalse();
+		assertThat(taskValidatorImpl.validateDeleteRigth(taskDTO)).isFalse();
 	}
 
 }

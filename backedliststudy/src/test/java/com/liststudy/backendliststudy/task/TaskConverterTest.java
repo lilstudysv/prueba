@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -29,7 +28,7 @@ public class TaskConverterTest {
     private TaskConverter taskConverter;
 
     private Task task;
-    private TaskModel taskModel;
+    private TaskDTO taskDTO;
     private User user;
 
     @Before
@@ -49,32 +48,32 @@ public class TaskConverterTest {
         user.setId(USER_ID);
         task.setCreator(user);
 
-        taskModel = new TaskModel();
-        taskModel.setId(1l);
-        taskModel.setState(EnumStateTask.REQUESTED);
-        taskModel.setTopic(EnumTopicTask.MATHS);
-        taskModel.setKind(EnumKindTask.INTERACTIVA);
-        taskModel.setPrice(PRICE);
-        taskModel.setTitle(TITLE);
-        taskModel.setDescription(DESCRIPTION);
-        taskModel.setCreator(USER_ID);
+        taskDTO = new TaskDTO();
+        taskDTO.setId(1l);
+        taskDTO.setState(EnumStateTask.REQUESTED);
+        taskDTO.setTopic(EnumTopicTask.MATHS);
+        taskDTO.setKind(EnumKindTask.INTERACTIVA);
+        taskDTO.setPrice(PRICE);
+        taskDTO.setTitle(TITLE);
+        taskDTO.setDescription(DESCRIPTION);
+        taskDTO.setCreator(USER_ID);
     }
 
 
     @Test
     public void taskModelToTask() {
         when(userJpaRepository.findById(USER_ID)).thenReturn(user);
-        Assert.assertTrue(new ReflectionEquals(task).matches(taskConverter.taskModelToTask(taskModel)));
+        Assert.assertTrue(new ReflectionEquals(task).matches(taskConverter.taskModelToTask(taskDTO)));
     }
 
     @Test
     public void taskModelToTask_2params() {
-        Assert.assertTrue(new ReflectionEquals(task).matches(taskConverter.taskModelToTask(taskModel, task)));
+        Assert.assertTrue(new ReflectionEquals(task).matches(taskConverter.taskModelToTask(taskDTO, task)));
     }
 
     @Test
     public void taskToTaskModel() {
-        Assert.assertTrue(new ReflectionEquals(taskModel).matches(taskConverter.taskToTaskModel(task)));
+        Assert.assertTrue(new ReflectionEquals(taskDTO).matches(taskConverter.taskToTaskModel(task)));
     }
 
 }
