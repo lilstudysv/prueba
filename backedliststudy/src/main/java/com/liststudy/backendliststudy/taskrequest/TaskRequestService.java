@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.liststudy.backendliststudy.task.EnumStateTask;
-import com.liststudy.backendliststudy.task.Task;
-import com.liststudy.backendliststudy.task.TaskJpaRepository;
+import com.liststudy.backendliststudy.model.EnumStateTask;
+import com.liststudy.backendliststudy.model.Task;
+import com.liststudy.backendliststudy.repository.TaskJpaRepository;
 import com.liststudy.backendliststudy.user.User;
 import com.liststudy.backendliststudy.user.UserJpaRepository;
 

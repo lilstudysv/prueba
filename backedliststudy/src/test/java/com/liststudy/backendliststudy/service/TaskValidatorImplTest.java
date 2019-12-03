@@ -1,5 +1,7 @@
-package com.liststudy.backendliststudy.task;
+package com.liststudy.backendliststudy.service;
 
+import com.liststudy.backendliststudy.dto.TaskDTO;
+import com.liststudy.backendliststudy.service.TaskInputParamsValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;

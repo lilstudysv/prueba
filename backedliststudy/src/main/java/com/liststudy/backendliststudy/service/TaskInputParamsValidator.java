@@ -1,5 +1,6 @@
-package com.liststudy.backendliststudy.task;
+package com.liststudy.backendliststudy.service;
 
+import com.liststudy.backendliststudy.dto.TaskDTO;
 import org.springframework.stereotype.Service;
 
 @Service("taskInputParamsValidator")

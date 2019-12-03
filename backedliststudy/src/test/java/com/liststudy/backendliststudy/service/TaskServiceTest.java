@@ -1,16 +1,17 @@
-package com.liststudy.backendliststudy.task;
+package com.liststudy.backendliststudy.service;
 
+import com.liststudy.backendliststudy.repository.TaskJpaRepository;
+import com.liststudy.backendliststudy.model.Task;
 import com.liststudy.backendliststudy.security.UserLoggedToken;
+import com.liststudy.backendliststudy.service.TaskConverter;
+import com.liststudy.backendliststudy.service.TaskService;
 import com.liststudy.backendliststudy.user.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static org.mockito.Mockito.when;
 
