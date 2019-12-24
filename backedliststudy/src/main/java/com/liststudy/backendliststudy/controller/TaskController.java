@@ -3,13 +3,15 @@ package com.liststudy.backendliststudy.controller;
 import java.util.List;
 
 import com.liststudy.backendliststudy.dto.FiltersTaskDTO;
-import com.liststudy.backendliststudy.dto.TaskDTO;
+import com.liststudy.backendliststudy.dto.input.TaskCreateInputDTO;
+import com.liststudy.backendliststudy.dto.input.TaskDeleteInputDTO;
+import com.liststudy.backendliststudy.dto.input.TaskUpdateInputDTO;
+import com.liststudy.backendliststudy.dto.output.TaskOutputDTO;
 import com.liststudy.backendliststudy.model.Task;
-import com.liststudy.backendliststudy.service.TaskInputParamsValidator;
+import com.liststudy.backendliststudy.validator.TaskValidator;
 import com.liststudy.backendliststudy.service.TaskService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,79 +24,59 @@ public class TaskController {
 
 	private static final Log LOG =LogFactory.getLog(TaskService.class);
 	private final TaskService taskService;
-	private final TaskInputParamsValidator taskInputParamsValidator;
+	private final TaskValidator taskValidator;
 
-	@Autowired
 	public TaskController(@Qualifier("taskService") TaskService taskService,
-						  @Qualifier("taskInputParamsValidator") TaskInputParamsValidator taskInputParamsValidator) {
+						  @Qualifier("taskValidator") TaskValidator taskValidator) {
 		this.taskService = taskService;
-		this.taskInputParamsValidator = taskInputParamsValidator;
+		this.taskValidator = taskValidator;
 	}
 
 	@GetMapping
-	public ResponseEntity<List<TaskDTO>> getAll(FiltersTaskDTO filtersTaskDTO) {
+	public ResponseEntity<List<TaskOutputDTO>> getAll(FiltersTaskDTO filtersTaskDTO) {
 		LOG.info("GET:/tasks params filtersTaskDTO: "+ filtersTaskDTO.toString());
 		return new ResponseEntity<>(taskService.getAllTask(filtersTaskDTO), HttpStatus.OK);
 	}
 
 	@GetMapping("/{idTask}")
-	public ResponseEntity<TaskDTO> get(@PathVariable(value="idTask") Long idTask) {
+	public ResponseEntity<TaskOutputDTO> get(@PathVariable(value="idTask") Long idTask) {
 		LOG.info("GET:/tasks/{idTask] params idTask: "+ idTask.toString());
-		return new ResponseEntity<>(taskService.getTaskModel(idTask), HttpStatus.OK);
+		return new ResponseEntity<>(taskService.getTaskOutputDTO(idTask), HttpStatus.OK);
 	}
 
 	@PostMapping
-	public ResponseEntity<TaskDTO> create(@RequestBody TaskDTO taskDTO) {
-		LOG.info("POST:/tasks params TaskDTO: "+ taskDTO.toString());
-
-		if(!taskInputParamsValidator.validateCreateRigth(taskDTO)) {
-			LOG.info("POST:/tasks NOT ACCEPTABLE --> FINISH");
-			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-		}
-
-		TaskDTO taskDTOReturn = taskService.create(taskDTO);
-		LOG.info("POST:/tasks FINISH");
-		return new ResponseEntity<>(taskDTOReturn, HttpStatus.OK);
+	public ResponseEntity<TaskOutputDTO> create(@RequestBody TaskCreateInputDTO taskCreateInputDTO) {
+		LOG.info("POST:/tasks params TaskCreateInputDTO: "+ taskCreateInputDTO.toString());
+		return ResponseEntity.ok(taskService.create(taskCreateInputDTO));
 	}
 
 	@PutMapping
-	public ResponseEntity<TaskDTO> update(@RequestBody TaskDTO taskDTO) {
-		LOG.info("PUT:/tasks params TaskDTO: "+ taskDTO.toString());
+	public ResponseEntity<TaskOutputDTO> update(@RequestBody TaskUpdateInputDTO taskUpdateInputDTO) {
+		LOG.info("PUT:/tasks params TaskCreateInputDTO: "+ taskUpdateInputDTO.toString());
 
-		if(!taskInputParamsValidator.validateUpdateRigth(taskDTO)) {
-			LOG.info("PUT:/tasks NOT ACCEPTABLE --> FINISH");
-			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		Task task = taskService.getTask(taskUpdateInputDTO.getId());
+		if(!taskValidator.isTaskValid(task)) {
+			LOG.info("PUT:/tasks BAD REQUEST --> FINISH ");
+			return ResponseEntity.badRequest().build();
 		}
 
-		Task task = taskService.getTask(taskDTO.getId());
-		if(!taskService.isTaskValid(task)) {
-			LOG.info("PUT:/tasks NOT ACCEPTABLE --> FINISH 2");
-			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-		}
-
-		TaskDTO taskDTOReturn = taskService.update(task, taskDTO);
 		LOG.info("PUT:/tasks FINISH");
-		return new ResponseEntity<>(taskDTOReturn, HttpStatus.OK);
+		return ResponseEntity.ok(taskService.update(task, taskUpdateInputDTO));
 	}
 
-	@DeleteMapping
-	public ResponseEntity<TaskDTO> delete(@RequestBody TaskDTO taskDTO) {
-		LOG.info("DELETE:/tasks params TaskDTO: "+ taskDTO.toString());
+	@DeleteMapping("/{idTask}")
+	public ResponseEntity<TaskCreateInputDTO> delete(@PathVariable(value="idTask") Long idTask) {
+		LOG.info("DELETE:/tasks params idTask: "+ idTask);
 
-		if(!taskInputParamsValidator.validateDeleteRigth(taskDTO)) {
-			LOG.info("DELETE:/tasks NOT ACCEPTABLE --> FINISH");
-			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-		}
-
-		Task task = taskService.getTask(taskDTO.getId());
-		if(!taskService.isTaskValid(task)) {
-			LOG.info("DELETE:/tasks NOT ACCEPTABLE --> FINISH 2");
-			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		Task task = taskService.getTask(idTask);
+		if(!taskValidator.isTaskValid(task)) {
+			LOG.info("DELETE:/tasks BAD REQUEST --> FINISH");
+            return ResponseEntity.badRequest().build();
 		}
 
 		taskService.delete(task);
 		LOG.info("DELETE:/tasks FINISH");
-		return new ResponseEntity<>(HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 
 }

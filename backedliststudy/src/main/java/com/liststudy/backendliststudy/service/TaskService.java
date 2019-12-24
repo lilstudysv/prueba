@@ -1,16 +1,18 @@
 package com.liststudy.backendliststudy.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.liststudy.backendliststudy.dto.FiltersTaskDTO;
-import com.liststudy.backendliststudy.dto.TaskDTO;
+import com.liststudy.backendliststudy.dto.input.TaskCreateInputDTO;
+import com.liststudy.backendliststudy.dto.input.TaskUpdateInputDTO;
+import com.liststudy.backendliststudy.dto.output.TaskOutputDTO;
+import com.liststudy.backendliststudy.mapper.TaskMapper;
 import com.liststudy.backendliststudy.model.EnumStateTask;
 import com.liststudy.backendliststudy.model.Task;
 import com.liststudy.backendliststudy.security.UserLoggedToken;
 import com.liststudy.backendliststudy.repository.TaskJpaRepository;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -18,57 +20,46 @@ import org.springframework.stereotype.Service;
 @Service("taskService")
 public class TaskService  {
 	
-	private static final Log LOG =LogFactory.getLog(TaskService.class);
 
 	private final TaskJpaRepository taskJpaRepository;
-	private final TaskConverter taskConverter;
 	private final UserLoggedToken userLoggedToken;
+	private final TaskMapper taskMapper = Mappers.getMapper( TaskMapper.class );
+
 
 	@Autowired
 	public TaskService(@Qualifier("taskJpaRepository") TaskJpaRepository taskJpaRepository,
-					   @Qualifier("taskConverter") TaskConverter taskConverter,
 					   @Qualifier("userLoggedToken") UserLoggedToken userLoggedToken) {
-
 		this.taskJpaRepository = taskJpaRepository;
-		this.taskConverter = taskConverter;
 		this.userLoggedToken = userLoggedToken;
 	}
 
-	public List<TaskDTO> getAllTask(FiltersTaskDTO filtersTaskDTO) {
-		List<Task> tasks = taskJpaRepository.getTasksFilters(filtersTaskDTO);
-		List<TaskDTO> taskDTOList = new ArrayList<>();
-		tasks.forEach(task -> taskDTOList.add(taskConverter.taskToTaskModel(task)));
-		return taskDTOList;
+	public List<TaskOutputDTO> getAllTask(FiltersTaskDTO filtersTaskDTO) {
+		return taskMapper.taskToTaskOutputDTO(taskJpaRepository.getTasksFilters(filtersTaskDTO));
 	}
 
-	public TaskDTO getTaskModel(Long id) {
-		return taskConverter.taskToTaskModel(taskJpaRepository.findById(id));
+	public TaskOutputDTO getTaskOutputDTO(Long id) {
+		return taskMapper.taskToTaskOutputDTO(taskJpaRepository.findById(id));
 	}
 
 	public Task getTask(Long id) {
 		return taskJpaRepository.findById(id);
 	}
 
-	//¿THIS METHOD HERE?
-	public Boolean isTaskValid(Task task){
-		return task!=null && task.getCreator().getId().equals(userLoggedToken.getUserLogged().getId());
-	}
 
-	public TaskDTO create(TaskDTO taskDTO) {
-		taskDTO.setState(EnumStateTask.REQUESTED);
-		taskDTO.setCreator(userLoggedToken.getUserLogged().getId());
-		Task task = taskConverter.taskModelToTask(taskDTO);
+	public TaskOutputDTO create(TaskCreateInputDTO taskCreateInputDTO) {
+		Task task = taskMapper.taskCreateImputDTOtoTask(taskCreateInputDTO);
+		task.setState(EnumStateTask.REQUESTED);
+		task.setCreator(userLoggedToken.getUserLogged());
 		taskJpaRepository.save(task);
-		return taskConverter.taskToTaskModel(task);
+		return taskMapper.taskToTaskOutputDTO(task);
 	}
 
-	public TaskDTO update(Task task, TaskDTO taskDTO) {
-		task = taskConverter.taskModelToTask(taskDTO, task);
+	public TaskOutputDTO update(Task task, TaskUpdateInputDTO taskUpdateInputDTO) {
+		task = taskMapper.taskUpdateImputDTOtoTask(taskUpdateInputDTO, task);
 		taskJpaRepository.save(task);
-		return taskConverter.taskToTaskModel(task);
+		return taskMapper.taskToTaskOutputDTO(task);
 	}
 
-	//TODO:TESTING VERIFY????????
 	public void delete(Task task) {
 		taskJpaRepository.delete(task);
 	}

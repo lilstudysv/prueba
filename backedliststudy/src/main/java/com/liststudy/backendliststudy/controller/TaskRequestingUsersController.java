@@ -1,5 +1,6 @@
 package com.liststudy.backendliststudy.controller;
 
+import com.liststudy.backendliststudy.dto.UserDTO;
 import com.liststudy.backendliststudy.model.Task;
 import com.liststudy.backendliststudy.security.UserLoggedToken;
 import com.liststudy.backendliststudy.service.TaskRequestingUsersService;
